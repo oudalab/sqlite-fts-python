@@ -66,6 +66,7 @@ def make_tokenizer_module(tokenizer):
         tkn = sqlite3_tokenizer()
         tkn.t = tokenizer
         tokenizers[ctypes.addressof(tkn)] = tkn
+        ppTokenizer = ctypes.cast(ppTokenizer, POINTER(POINTER(sqlite3_tokenizer)))
         ppTokenizer[0] = ctypes.pointer(tkn)
         return SQLITE_OK
 
@@ -80,6 +81,7 @@ def make_tokenizer_module(tokenizer):
         cur.pos = 0
         cur.offset = 0
         cursors[ctypes.addressof(cur)] = cur
+        ppCursor = ctypes.cast(ppCursor, POINTER(POINTER(sqlite3_tokenizer_cursor)))
         ppCursor[0] = ctypes.pointer(cur)
         return SQLITE_OK
 
@@ -87,13 +89,17 @@ def make_tokenizer_module(tokenizer):
               piStartOffset, piEndOffset, piPosition):
         try:
             cur = pCursor[0]
+            tokens = cur.tokens
 
             while True:
-                normalized, inputBegin, inputEnd = next(cur.tokens)
-                normalized = normalized.encode('utf-8')
+                if tokens is None:
+                    return SQLITE_DONE
+                normalized, inputBegin, inputEnd = next(tokens)
                 if normalized:
                     break
 
+            normalized = normalized.encode('utf-8')
+            ppToken = ctypes.cast(ppToken, POINTER(ctypes.c_char_p))
             ppToken[0] = normalized
             pnBytes[0] = len(normalized)
             piStartOffset[0] = inputBegin

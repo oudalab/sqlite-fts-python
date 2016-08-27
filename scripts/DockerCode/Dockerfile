@@ -1,0 +1,19 @@
+FROM python
+FROM ubuntu
+COPY . /src
+RUN apt-get update &&\
+    apt-get upgrade &&\
+    apt-get install -y git &&\
+    apt-get install -y curl &&\
+    apt-get install -y tcl &&\
+    apt-get install -y python3-pip &&\
+    pip3 install sqlitefts &&\
+    pip3 install apsw &&\
+    pip3 install nltk &&\
+    pip3 install cltk &&\
+    cd /src &&\
+    ./buildcode
+    
+
+
+

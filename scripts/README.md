@@ -27,20 +27,20 @@ using say `docker build -t yan/oulatin .`
 then after build the image, you can run the container instance with the command 
 "docker run -it yan/oulatin /bin/bash"
 And the python oulatin tokenizer test file is in "src" folder inside the container,
-so yon can cd to "src" directory and run "python3 pdb__test_oulatin.py" to get into the debug mode of
+so yon can cd to "src" directory and run `python3 pdb__test_oulatin.py` to get into the debug mode of
 the ou latin tokenizer.
 
 some of the command you can run at the debug mode can be:
- for i in c.execute("select * from sqlite_master").fetchall(): print(i)
+` for i in c.execute("select * from sqlite_master").fetchall(): print(i)`
 
 
-"SELECT * FROM docs WHERE docs MATCH 'test'"
- for i in c.execute("SELECT * FROM docs WHERE docs MATCH 'test'").fetchall(): print(i)
+
+`for i in c.execute("SELECT * FROM docs WHERE docs MATCH 'test'").fetchall(): print(i)`
 
 
- c.execute("create virtual table tok1 using fts3tokenize('porter')")
+`c.execute("create virtual table tok1 using fts3tokenize('porter')")`
 
- for i in c.execute("create virtual table tok1 using fts3tokenize('porter')").fecthall():print(i)
+`for i in c.execute("create virtual table tok1 using fts3tokenize('porter')").fecthall():print(i)`
 
-  for i in c.execute("select token,start,end,position from tok1 where input='This is a test sentence.'").fetchall():print(i);
+`for i in c.execute("select token,start,end,position from tok1 where input='This is a test sentence.'").fetchall():print(i);`
  

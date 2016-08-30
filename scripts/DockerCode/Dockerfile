@@ -10,8 +10,8 @@ RUN apt-get update &&\
     pip3 install sqlitefts &&\
     pip3 install apsw &&\
     pip3 install nltk &&\
-    pip3 install cltk &&\
-    cd /src &&\
+    pip3 install cltk
+RUN cd /src &&\
     ./buildcode
     
 

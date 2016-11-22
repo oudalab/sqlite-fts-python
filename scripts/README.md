@@ -31,16 +31,11 @@ so yon can cd to "src" directory and run `python3 pdb__test_oulatin.py` to get i
 the ou latin tokenizer.
 
 some of the command you can run at the debug mode can be:
-` for i in c.execute("select * from sqlite_master").fetchall(): print(i)`
-
-
-
-`for i in c.execute("SELECT * FROM docs WHERE docs MATCH 'test'").fetchall(): print(i)`
-
-
-`c.execute("create virtual table tok1 using fts3tokenize('porter')")`
-
-`for i in c.execute("create virtual table tok1 using fts3tokenize('porter')").fecthall():print(i)`
-
-`for i in c.execute("select token,start,end,position from tok1 where input='This is a test sentence.'").fetchall():print(i);`
+```python
+for i in c.execute("select * from sqlite_master").fetchall(): print(i)
+for i in c.execute("SELECT * FROM docs WHERE docs MATCH 'test'").fetchall(): print(i)
+c.execute("create virtual table tok1 using fts3tokenize('porter')")
+for i in c.execute("create virtual table tok1 using fts3tokenize('porter')").fecthall():print(i)
+for i in c.execute("select token,start,end,position from tok1 where input='This is a test sentence.'").fetchall():print(i);
+```
  

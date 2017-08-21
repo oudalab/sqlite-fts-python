@@ -119,14 +119,17 @@ def make_tokenizer_module(tokenizer):
     return tokenizer_module
 
 
+def _buffer(x): return x
+
+
 def register_tokenizer(c, name, tokenizer_module):
     """ register tokenizer module with SQLite connection. """
     if sys.version_info.major == 2:
         global buffer
     else:
-        buffer = lambda x: x
+        buffer = _buffer
     module_addr = ctypes.addressof(tokenizer_module)
     address_blob = buffer(struct.pack("P", module_addr))
-    r = c.execute('SELECT fts3_tokenizer(?, ?)', (name, address_blob))
+    r = c.cursor().execute('SELECT fts3_tokenizer(?, ?)', (name, address_blob))
     tokenizer_modules[module_addr] = tokenizer_module
     return r

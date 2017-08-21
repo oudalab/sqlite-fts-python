@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import print_function, unicode_literals
-import sqlite3
+#import sqlite3
+import apsw
 import ctypes
 import struct
 import re
@@ -21,32 +22,37 @@ class SimpleTokenizer(fts.Tokenizer):
 
 
 def test_make_tokenizer():
-    c = sqlite3.connect(':memory:')
+    c = apsw.Connection(':memory:')
     tokenizer_module = fts.make_tokenizer_module(SimpleTokenizer())
     assert fts.tokenizer.sqlite3_tokenizer_module == type(tokenizer_module)
     c.close()
 
 
-def test_reginster_tokenizer():
+def test_register_tokenizer():
     name = 'simpe'
-    c = sqlite3.connect(':memory:')
+    c = apsw.Connection(':memory:')
+    c.config(apsw.SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER, 1)
     tokenizer_module = fts.make_tokenizer_module(SimpleTokenizer())
     fts.register_tokenizer(c, name, tokenizer_module)
-    v = c.execute("SELECT FTS3_TOKENIZER(?)", (name,)).fetchone()[0]
+    v = c.cursor().execute("SELECT FTS3_TOKENIZER(?)", (name,)).fetchone()[0]
     assert ctypes.addressof(tokenizer_module) == struct.unpack("P", v)[0]
     c.close()
 
 
 def test_createtable():
-    c = sqlite3.connect(':memory:')
-    c.row_factory = sqlite3.Row
+    c = apsw.Connection(':memory:')
+    # c.row_factory = sqlite3.Row
     name = 'simple'
     sql = "CREATE VIRTUAL TABLE fts USING FTS4(tokenize={})".format(name)
-    fts.register_tokenizer(c, name, fts.make_tokenizer_module(SimpleTokenizer()))
-    c.execute(sql)
-    r = c.execute("SELECT * FROM sqlite_master WHERE type='table' AND name='fts'").fetchone()
+    fts.register_tokenizer(c, name,
+                           fts.make_tokenizer_module(SimpleTokenizer()))
+    c.cursor().execute(sql)
+    r = c.cursor().execute("SELECT * FROM sqlite_master WHERE type='table'"
+                           " AND name='fts'").fetchone()
     assert r
-    assert r[str('type')] == 'table' and r[str('name')] == 'fts' and r[str('tbl_name')] == 'fts'
+    assert r[str('type')] == 'table' and\
+        r[str('name')] == 'fts' and\
+        r[str('tbl_name')] == 'fts'
     assert r[str('sql')].upper() == sql.upper()
     c.close()
 

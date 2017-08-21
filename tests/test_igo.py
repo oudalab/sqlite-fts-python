@@ -1,11 +1,12 @@
 # coding: utf-8
 from __future__ import print_function, unicode_literals
-import os
+import sys
 
 import sqlitefts as fts
 
 import pytest
-from jajp_common import *  # noqa
+if sys.version_info < (3, 3) or sys.version_info >= (3, 4):
+    from jajp_common import *  # noqa
 igo = pytest.importorskip('igo')
 
 
@@ -26,4 +27,4 @@ def name():
 
 @pytest.fixture
 def t():
-    return IgoTokenizer(os.getenv('IGO_DICT'))
+    return IgoTokenizer()

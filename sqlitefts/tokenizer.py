@@ -108,7 +108,7 @@ class Tokenizer:
         Tokenize given unicode text. Yields each tokenized token,
         start position(in bytes), end positon(in bytes)
         """
-        yield text, 0, len(text.encode('utf-8'))
+        yield text, 0, len(text.encode('utf-16'))
 
 
 tokenizer_modules = {}
@@ -143,7 +143,7 @@ def make_tokenizer_module(tokenizer):
     def xopen(pTokenizer, pInput, nInput, ppCursor):
         cur = ffi.new('sqlite3_tokenizer_cursor *')
         tokenizer = ffi.from_handle(pTokenizer.t)
-        tokens = tokenizer.tokenize(ffi.string(pInput).decode('utf-8'))
+        tokens = tokenizer.tokenize(ffi.string(pInput).decode('utf-16'))
         tknh = ffi.new_handle(tokens)
         cur.pTokenizer = pTokenizer
         cur.tokens = tknh
@@ -163,7 +163,7 @@ def make_tokenizer_module(tokenizer):
             tokens = ffi.from_handle(cur.tokens)
             while True:
                 normalized, inputBegin, inputEnd = next(tokens)
-                normalized = normalized.encode('utf-8')
+                normalized = normalized.encode('utf-16')
                 if normalized:
                     break
 
